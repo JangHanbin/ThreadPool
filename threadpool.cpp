@@ -27,7 +27,16 @@ bool ThreadPool::initPool()
 {
     if(num_of_thread_ > 0)
     {
+        //reserve vector to avoid mem alloc many time.
         pool.reserve(num_of_thread_);
+
+        //TODO : I don't wanna use for statement. So edit this statement
+        //init each ThreadBody for reduce time when run pool
+        for(int i; i<num_of_thread_;i++)
+        {
+            pool.push_back(new ThreadBody);
+        }
+
         return true;
     }
 
@@ -36,10 +45,14 @@ bool ThreadPool::initPool()
     return false;
 }
 
-bool ThreadPool::jmpToPool(void (*fp))
+bool ThreadPool::jmpToPool(void(*fptr) (void), ...)
 {
-    pool.push_back(fp);
+
+//    std::cout<<"argc : "<<argc<<std::endl;
+    return true;
 }
+
+
 
 ThreadPool::ThreadPool()
 {
@@ -77,4 +90,19 @@ int ThreadPool::get_num_of_activated_thread() const
 void ThreadPool::inc_num_of_activated_thread()
 {
     num_of_activated_thread_++;
+}
+
+ThreadBody::ThreadBody()
+{
+}
+
+bool ThreadBody::get_status() const
+{
+    return status_;
+}
+
+void ThreadBody::switch_status()
+{
+    status_ = !status_;
+
 }

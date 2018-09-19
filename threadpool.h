@@ -7,7 +7,19 @@
 #include <vector>
 #include <thread>
 
-//class Thread_
+class ThreadBody
+{
+    // 1 = running
+    // 2 = waiting
+    bool status_=0;
+    std::thread worker;
+
+public:
+    ThreadBody();
+    bool get_status() const;
+    void switch_status();
+};
+
 class ThreadPool
 {
     //For Number of Thread in Thread Pool
@@ -15,7 +27,7 @@ class ThreadPool
     //For counting active thread
     int num_of_activated_thread_ = 0;
 
-    std::vector<std::thread> pool;
+    std::vector<ThreadBody *> pool;
     std::mutex init_count_door;
     std::mutex thread_door;
 
@@ -36,7 +48,7 @@ public:
     int get_num_of_thread_pool_class() const;
 
     bool initPool();
-    bool jmpToPool(void (*fp));
+    bool jmpToPool(void(*fptr) (void), ...);
 };
 
 #endif // THREADPOOL_H
